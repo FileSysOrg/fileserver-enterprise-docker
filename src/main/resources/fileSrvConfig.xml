@@ -1,0 +1,160 @@
+<?xml version="1.0" standalone="no"?>
+<!-- <!DOCTYPE fileserver SYSTEM "fileserver.dtd"> -->
+
+<fileserver>
+    <servers>
+        <SMB enable="${JFSRV_SMB_ENABLE}"/>
+        <FTP enable="${JFSRV_FTP_ENABLE}"/>
+        <NFS enable="${JFSRV_NFS_ENABLE}"/>
+    </servers>
+
+    <server-core>
+        <SMB2>
+            <NOmaxPacketSize>2M</NOmaxPacketSize>
+            <NOrequireSigning/>
+        </SMB2>
+        <SMB3>
+            <!-- Enabled encryption types and order -->
+            <encryptionTypes>${JFSRV_SMB_ENCRYPTION_TYPES}</encryptionTypes>
+            <NOdisableEncryption/>
+
+            <!-- JCE provider name for AES encryption - 'SunJCE' or 'BC'-->
+            <useAESProvider>${JFSRV_SMB_AES_PROVIDER}</useAESProvider>
+        </SMB3>
+    </server-core>
+
+    <SMB>
+        <host name="${JFSRV_SMB_SERVERNAME}" domain="${JFSRV_SMB_DOMAIN}">
+            <broadcast>AUTO</broadcast>
+            <smbdialects>${JFSRV_SMB_DIALECTS}</smbdialects>
+            <comment>JFileServer Enterprise - SMB2/3 File Server</comment>
+
+            <!-- Use the default privileged ports to run the SMB server -->
+            <tcpipSMB/>
+
+            <hostAnnounce interval="5"/>
+            <idleCheckOpenFiles/>
+        </host>
+        <sessionDebug flags="${JFSRV_SMB_DEBUGFLAGS}"/>
+        <!--    <netbiosDebug/> -->
+        <!--    <announceDebug/> -->
+
+        <authenticator type="enterprise">
+            <useSPNEGO/>
+            <mode>USER</mode>
+            <NOallowGuest/>
+            <Debug/>
+<!--
+            <KerberosConfig>/jfileserver/kerberos/krb5_aes256.conf</KerberosConfig>
+            <LoginConfig>/jfileserver/kerberos/jfs-login_aes256.config</LoginConfig>
+            <LoginEntry>JFileServerSMB</LoginEntry>
+
+            <Realm>...</Realm>
+            <Password>...</Password>
+
+            <kerberosDebug/>
+-->
+        </authenticator>
+
+    </SMB>
+
+    <FTP>
+        <port>${JFSRV_FTP_PORT}</port>
+        <allowAnonymous/>
+        <debug flags="${JFSRV_FTP_DEBUGFLAGS}"/>
+
+        <!-- Enable FTPS -->
+        <!--
+            <keyStore>PATH-TO-KEYSTORE-FILE</keyStore>
+            <keyStoreType>JKS</keyStoreType>
+            <keyStorePassphrase>KEYSTORE-PASSWORD</keyStorePassphrase>
+
+            <trustStore>PATH-TO-TRUSTSTORE-FILE</trustStore>
+            <trustStoreType>JKS</trustStoreType>
+            <trustStorePassphrase>TRUSTSTORE-PASSWORD</trustStorePassphrase>
+
+            <NOrequireSecureSession/>
+            <NOsslEngineDebug/>
+        -->
+    </FTP>
+
+    <NFS>
+        <enablePortMapper/>
+        <debug flags="${JFSRV_NFS_DEBUGFLAGS}"/>
+    </NFS>
+
+    <debug>
+        <output type="${JFSRV_DEBUG_OUTPUT}">
+            <logFile>${JFSRV_DEBUG_LOGPATH}</logFile>
+            <append/>
+        </output>
+    </debug>
+
+    <!-- Audit log output -->
+    <audit>
+        <output type="File">
+            <logFile>/jfileserver/logs/jfsaudit.log</logFile>
+            <append/>
+        </output>
+    </audit>
+
+    <shares>
+        <diskshare name="${JFSRV_SHARE_NAME}" comment="${JFSRV_SHARE_COMMENT}">
+            <driver>
+                <class>org.filesys.smb.server.disk.JavaNIODiskDriver</class>
+                <LocalPath>${JFSRV_SHARE_PATH}</LocalPath>
+                <Debug/>
+            </driver>
+
+            <notifyDebug/>
+        </diskshare>
+
+        <!-- Database filesystem share -->
+        <diskshare name="${JFSRV_DBSHARE_NAME}" comment="Database filesystem using a local folder">
+            <driver>
+                <class>org.filesys.server.filesys.db.DBDiskDriver</class>
+                <CacheTime>300</CacheTime>
+                <NODebug/>
+
+                <DatabaseInterface>
+                    <class>org.filesys.server.filesys.db.postgresql.PostgreSQLDBInterface</class>
+                    <DSN>jdbc:postgresql://jfileserver-postgres:5432/jfileserver</DSN>
+                    <Username>jfileserver</Username>
+                    <Password>fileserver</Password>
+                    <ConnectionPool>10:20</ConnectionPool>
+                    <WaitForDatabase>30</WaitForDatabase>
+                    <FileSystemTable>filesys</FileSystemTable>
+                    <StreamsTable>filestrm</StreamsTable>
+                    <Debug/>
+                    <SQLDebug/>
+                </DatabaseInterface>
+
+                <FileLoader>
+                    <class>org.filesys.server.filesys.loader.SimpleFileLoader</class>
+                    <RootPath>${JFSRV_DBSHARE_PATH}</RootPath>
+                    <Debug/>
+                </FileLoader>
+            </driver>
+        </diskshare>
+    </shares>
+
+    <security>
+        <JCEProvider>org.bouncycastle.jce.provider.BouncyCastleProvider</JCEProvider>
+
+        <users>
+            <user name="${JFSRV_ADMIN_USER}">
+                <password>${JFSRV_ADMIN_PASSWORD}</password>
+                <comment>System administrator</comment>
+                <administrator/>
+            </user>
+            <user name="${JFSRV_NORMAL_USER}">
+                <password>${JFSRV_NORMAL_PASSWORD}</password>
+            </user>
+        </users>
+    </security>
+
+    <licence>
+        <licencePath>${JFSRV_LICENCE_PATH}</licencePath>
+    </licence>
+
+</fileserver>
