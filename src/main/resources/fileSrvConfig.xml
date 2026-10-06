@@ -114,7 +114,7 @@
             <driver>
                 <class>org.filesys.server.filesys.db.DBDiskDriver</class>
                 <CacheTime>300</CacheTime>
-                <NODebug/>
+                <Debug/>
 
                 <DatabaseInterface>
                     <class>org.filesys.server.filesys.db.postgresql.PostgreSQLDBInterface</class>
@@ -123,19 +123,47 @@
                     <Password>fileserver</Password>
                     <ConnectionPool>10:20</ConnectionPool>
                     <WaitForDatabase>30</WaitForDatabase>
-                    <FileSystemTable>filesys</FileSystemTable>
-                    <StreamsTable>filestrm</StreamsTable>
-                    <Debug/>
-                    <SQLDebug/>
+                    <TablePrefix>${JFSRV_DBSHARE_NAME}</TablePrefix>
+                    <NODebug/>
+                    <NOSQLDebug/>
                 </DatabaseInterface>
 
                 <FileLoader>
                     <class>org.filesys.server.filesys.loader.SimpleFileLoader</class>
                     <RootPath>${JFSRV_DBSHARE_PATH}</RootPath>
-                    <Debug/>
+                    <NODebug/>
                 </FileLoader>
             </driver>
         </diskshare>
+
+        <diskshare name="${JFSRV_DBBLOB_NAME}" comment="Database filesystem using BLOB fields to store file data">
+            <driver>
+                <class>org.filesys.server.filesys.db.DBDiskDriver</class>
+                <CacheTime>300</CacheTime>
+                <Debug/>
+
+                <DatabaseInterface>
+                    <class>org.filesys.server.filesys.db.postgresql.PostgreSQLDBInterface</class>
+                    <DSN>jdbc:postgresql://jfileserver-postgres:5432/jfileserver</DSN>
+                    <Username>jfileserver</Username>
+                    <Password>fileserver</Password>
+                    <ConnectionPool>10:20</ConnectionPool>
+                    <WaitForDatabase>30</WaitForDatabase>
+                    <TablePrefix>${JFSRV_DBBLOB_NAME}</TablePrefix>
+                    <Debug/>
+                    <SQLDebug/>
+                </DatabaseInterface>
+
+                <FileLoader>
+                    <class>org.filesys.server.filesys.db.DBFileLoader</class>
+                    <ThreadPoolSize>6:2</ThreadPoolSize>
+                    <TempDirectory>${JFSRV_DBBLOB_TEMPDIR}</TempDirectory>
+                    <MaximumFilesPerDirectory>1000</MaximumFilesPerDirectory>
+                    <NODebug/>
+                </FileLoader>
+            </driver>
+        </diskshare>
+
     </shares>
 
     <security>
