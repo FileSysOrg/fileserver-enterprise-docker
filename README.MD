@@ -30,10 +30,12 @@ for testing email [info@filesys.org](mailto:info@filesys.org).
 
 Firstly, download the sample [docker-compose.yml](docker-compose.yml) file.
 
-Edit the _docker-compose.yml_ file and set the volume mapping for the local host folder to be shared by the file server.
+Edit the _docker-compose.yml_ file and set the volume mappings for the local host folder to be shared by the file server
+for the _jfileshare_ share, and the folder to store the file data for the _dbshare_ share.
 
     volumes:
       - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/fileShare
+      - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/dbshare
 
 The file server can be configured using environment variables. The following table shows the environment variables that
 can be overridden, and their default values :-
@@ -55,6 +57,8 @@ can be overridden, and their default values :-
 | JFSRV_SHARE_COMMENT   | Comment for the shared filesystem                  |Test shared filesystem
 | JFSRV_DBSHARE_NAME    | Name of the database share                         |dbshare
 | JFSRV_DBSHARE_PATH    | Path to the database share data                    |/jfileserver/dbshare
+| JFSRV_DBBLOB_NAME     | Name of the database blob share                    |dbblob
+| JFSRV_DBBLOB_TEMPDIR  | Path to the database blob share temporary folder   |/jfileserver/jdbctemp
 | JFSRV_ADMIN_USER      | Administrator user name                            |admin
 | JFSRV_ADMIN_PASSWORD  | Administrator user password                        |jfilesrv
 | JFSRV_NORMAL_USER     | Normal user name                                   |user

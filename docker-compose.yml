@@ -12,6 +12,7 @@ services:
       - "8000:8000"
     volumes:
       - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/fileShare
+      - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/dbshare
 #      - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/licence
     depends_on:
       - jfileserver-postgres
