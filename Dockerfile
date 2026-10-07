@@ -1,4 +1,4 @@
-FROM filesysorg/jfileserver:1.4.1
+FROM filesysorg/jfileserver:1.4.4
 
 # Set the working directory for the file server
 WORKDIR /jfileserver
@@ -18,8 +18,8 @@ RUN mkdir dbshare
 # Create a temporary folder for the database file share
 RUN mkdir jdbctemp
 
-# Move the demo licence into the licence folder
-#RUN mv -v jfileserver.lic licence/
+# Install the PSQL command
+RUN apk add postgresql-client
 
 # Expose the file server ports
 # SMB ports
@@ -60,6 +60,9 @@ ENV JFSRV_SHARE_PATH /jfileserver/fileShare
 
 ENV JFSRV_DBSHARE_NAME dbshare
 ENV JFSRV_DBSHARE_PATH /jfileserver/dbshare
+
+ENV JFSRV_DBBLOB_NAME dbblob
+ENV JFSRV_DBBLOB_TEMPDIR /jfileserver/jdbctemp
 
 ENV JFSRV_ADMIN_USER admin
 ENV JFSRV_ADMIN_PASSWORD jfilesrv

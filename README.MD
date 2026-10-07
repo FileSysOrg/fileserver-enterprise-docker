@@ -2,29 +2,38 @@
 
 This sample demonstrates how to run JFileServer-Enterprise using Docker.
 
-The sample setup includes two shared filesystems :-
+The sample setup includes three shared filesystems :-
 - Using a local folder
   
+  Share name _jfileshare_
+
   Uses the _org.filesys.smb.server.disk.JavaNIODiskDriver_ filesystem driver
 
-- Using the database filesystem
+- Using the database filesystem with a local folder for file data
+
+  Share name _dbshare_
 
   Uses the _org.filesys.server.filesys.db.DBDiskDriver_ filesystem driver with a PostGres database. The file data
   is stored in a local folder with the file/folder metadata stored in a database.
 
-To run the JFileServer-Enterprise Docker sample with SMB2 and/or SMB3 enabled requires a licence key. You can request a
-trial licence key by emailing [info@filesys.org](mailto:info@filesys.org).
+- Using the database filesystem with file data stored in database blob fields
+
+  Share name _dbblob_
+
+  Uses the _org.filesys.server.filesys.db.DBDiskDriver_ filesystem driver with a PostGres database. The file data
+  and file/folder metadata are stored in the database.
+
+The JFileServer-Enterprise sample includes a trial licence allowing up to 5 users. If you require a larger licence key
+for testing email [info@filesys.org](mailto:info@filesys.org).
 
 ## Configuring the Docker sample
 
 Firstly, download the sample [docker-compose.yml](docker-compose.yml) file.
 
-Edit the _docker-compose.yml_ file and set the volume mappings for the local host folder to be shared by the file server,
-and set the mapping for the host folder that contains the jfileserver.lic licence key.
+Edit the _docker-compose.yml_ file and set the volume mapping for the local host folder to be shared by the file server.
 
     volumes:
       - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/fileShare
-      - <MAP-TO-A-LOCAL-FOLDER>:/jfileserver/licence
 
 The file server can be configured using environment variables. The following table shows the environment variables that
 can be overridden, and their default values :-
